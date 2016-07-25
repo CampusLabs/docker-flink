@@ -1,0 +1,33 @@
+zookeeper:
+  image: jplock/zookeeper:3.4.6
+  ports:
+    - '2181:2181'
+
+kafka:
+  image: quay.io/orgsync/kafka:0.9.0.1
+  ports:
+    - '9092:9092'
+  links:
+    - zookeeper
+  hostname: kafka
+  environment:
+    - ADVERTISED_HOST_NAME=kafka
+
+jobmanager:
+  image: quay.io/orgsync/flink:latest
+  ports:
+    - '6123:6123'
+    - '8081:8081'
+  hostname: jobmanager
+  command: jobmanager
+  links:
+    - zookeeper
+    - kafka
+
+taskmanager:
+  image: quay.io/orgsync/flink:latest
+  command: taskmanager
+  links:
+    - jobmanager
+    - zookeeper
+    - kafka
