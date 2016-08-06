@@ -14,6 +14,8 @@ RUN curl -O "http://www-us.apache.org/dist/flink/flink-${FLINK_VERSION}/${ARCHIV
     && sed -i -e "s/> \"\$out\" 2>&1 < \/dev\/null//g" $FLINK_HOME/bin/flink-daemon.sh \
     && sed -i -e "s/echo \$mypid >> \$pid/echo \$mypid >> \$pid \&\& wait/g" $FLINK_HOME/bin/flink-daemon.sh
 
+ADD "http://repo1.maven.org/maven2/org/apache/flink/flink-metrics-statsd/${FLINK_VERSION}/flink-metrics-statsd-${FLINK_VERSION}.jar" $FLINK_HOME/lib/
+
 COPY entrypoint.sh $FLINK_HOME/bin/
 
 COPY log4j.properties $FLINK_HOME/conf/
@@ -29,6 +31,9 @@ VOLUME $FLINK_DATA
 
 EXPOSE 6123
 EXPOSE 8081
+
+ENV STATSD_HOST localhost
+ENV STATSD_PORT 8125
 
 ENV AKKA_ASK_TIMEOUT=
 ENV AKKA_FRAMESIZE=
@@ -75,7 +80,7 @@ ENV JOBMANAGER_WEB_HISTORY=
 ENV JOBMANAGER_WEB_PORT=8081
 ENV JOBMANAGER_WEB_TMPDIR=
 ENV JOBMANAGER_WEB_UPLOAD_DIR=$FLINK_DATA/jobs
-ENV METRICS_REPORTERS=
+ENV METRICS_REPORTERS=statsd
 ENV METRICS_SCOPE_JM=
 ENV METRICS_SCOPE_JM_JOB=
 ENV METRICS_SCOPE_TM=
