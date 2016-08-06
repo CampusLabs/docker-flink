@@ -4,7 +4,7 @@ ENV FLINK_VERSION 1.1.0
 ENV HADOOP_VERSION 27
 ENV SCALA_VERSION 2.11
 ENV FLINK_HOME /opt/flink
-ENV FLINK_DATA /var/flink/
+ENV FLINK_DATA /var/flink
 
 WORKDIR $FLINK_HOME
 ENV ARCHIVE_NAME "flink-${FLINK_VERSION}-bin-hadoop${HADOOP_VERSION}-scala_${SCALA_VERSION}.tgz"
@@ -16,7 +16,6 @@ RUN curl -O "http://www-us.apache.org/dist/flink/flink-${FLINK_VERSION}/${ARCHIV
 
 ENV FLINK_SOURCE "http://repo1.maven.org/maven2/org/apache/flink"
 ADD "${FLINK_SOURCE}/flink-metrics-statsd/${FLINK_VERSION}/flink-metrics-statsd-${FLINK_VERSION}.jar" $FLINK_HOME/lib/
-ADD "${FLINK_SOURCE}/flink-statebackend-rocksdb_${SCALA_VERSION}/${FLINK_VERSION}/flink-statebackend-rocksdb_${SCALA_VERSION}-${FLINK_VERSION}.jar" $FLINK_HOME/lib/
 
 COPY entrypoint.sh $FLINK_HOME/bin/
 
