@@ -14,7 +14,9 @@ RUN curl -O "http://www-us.apache.org/dist/flink/flink-${FLINK_VERSION}/${ARCHIV
     && sed -i -e "s/> \"\$out\" 2>&1 < \/dev\/null//g" $FLINK_HOME/bin/flink-daemon.sh \
     && sed -i -e "s/echo \$mypid >> \$pid/echo \$mypid >> \$pid \&\& wait/g" $FLINK_HOME/bin/flink-daemon.sh
 
-ADD "http://repo1.maven.org/maven2/org/apache/flink/flink-metrics-statsd/${FLINK_VERSION}/flink-metrics-statsd-${FLINK_VERSION}.jar" $FLINK_HOME/lib/
+ENV FLINK_SOURCE "http://repo1.maven.org/maven2/org/apache/flink"
+ADD "${FLINK_SOURCE}/flink-metrics-statsd/${FLINK_VERSION}/flink-metrics-statsd-${FLINK_VERSION}.jar" $FLINK_HOME/lib/
+ADD "${FLINK_SOURCE}/flink-statebackend-rocksdb_${SCALA_VERSION}/${FLINK_VERSION}/flink-statebackend-rocksdb_${SCALA_VERSION}-${FLINK_VERSION}.jar" $FLINK_HOME/lib/
 
 COPY entrypoint.sh $FLINK_HOME/bin/
 
@@ -41,12 +43,12 @@ ENV JOBMANAGER_HEAP_MB                         256
 ENV JOBMANAGER_RPC_ADDRESS                     localhost
 ENV JOBMANAGER_RPC_PORT                        6123
 ENV JOBMANAGER_WEB_PORT                        8081
-ENV JOBMANAGER_WEB_UPLOAD_DIR                  $FLINK_DATA/jobs
+ENV JOBMANAGER_WEB_UPLOAD_DIR                  file://$FLINK_DATA/jobs
 ENV METRICS_REPORTERS                          statsd
 ENV PARALLELISM_DEFAULT                        8
-ENV RECOVERY_ZOOKEEPER_STORAGEDIR              $FLINK_DATA/recovery
+ENV RECOVERY_ZOOKEEPER_STORAGEDIR              file://$FLINK_DATA/recovery
 ENV STATE_BACKEND                              filesystem
-ENV STATE_BACKEND_FS_CHECKPOINTDIR             $FLINK_DATA/checkpoints
+ENV STATE_BACKEND_FS_CHECKPOINTDIR             file://$FLINK_DATA/checkpoints
 ENV TASKMANAGER_HEAP_MB                        512
 ENV TASKMANAGER_MEMORY_PREALLOCATE             false
 ENV TASKMANAGER_NUMBEROFTASKSLOTS              8
