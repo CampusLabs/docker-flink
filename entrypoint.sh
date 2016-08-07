@@ -72,8 +72,8 @@ function write_config_file() {
   options[metrics.scope.jm.job]=$METRICS_SCOPE_JM_JOB
   options[metrics.scope.tm]=$METRICS_SCOPE_TM
   options[metrics.scope.tm.job]=$METRICS_SCOPE_TM_JOB
-  options[metrics.scope.tm.operator]=$METRICS_SCOPE_TM_OPERATOR
-  options[metrics.scope.tm.task]=$METRICS_SCOPE_TM_TASK
+  options[metrics.scope.operator]=$METRICS_SCOPE_TM_OPERATOR
+  options[metrics.scope.task]=$METRICS_SCOPE_TM_TASK
   options[parallelism.default]=$PARALLELISM_DEFAULT
   options[recovery.job.delay]=$RECOVERY_JOB_DELAY
   options[recovery.mode]=$RECOVERY_MODE
