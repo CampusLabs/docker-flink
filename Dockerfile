@@ -13,6 +13,7 @@ RUN apt-get update \
     && mvn package -f flink-metrics/flink-metrics-statsd/pom.xml -DskipTests \
     && cp "/code/flink-metrics/flink-metrics-statsd/target/flink-metrics-statsd-${FLINK_VERSION}.jar" /code/build-target/lib/ \
     && mkdir -p $FLINK_HOME \
+    && cd $FLINK_HOME \
     && cp -R /code/build-target/* $FLINK_HOME/ \
     && apt-get remove --purge -y maven \
     && apt-get autoremove -y \
@@ -21,6 +22,7 @@ RUN apt-get update \
     && sed -i -e "s/> \"\$out\" 2>&1 < \/dev\/null//g" $FLINK_HOME/bin/flink-daemon.sh \
     && sed -i -e "s/echo \$mypid >> \$pid/echo \$mypid >> \$pid \&\& wait/g" $FLINK_HOME/bin/flink-daemon.sh
 
+WORKDIR $FLINK_HOME
 COPY entrypoint.sh $FLINK_HOME/bin/
 
 COPY log4j.properties $FLINK_HOME/conf/
