@@ -51,6 +51,12 @@ ENV JOBMANAGER_RPC_PORT                        6123
 ENV JOBMANAGER_WEB_PORT                        8081
 ENV JOBMANAGER_WEB_UPLOAD_DIR                  file://$FLINK_DATA/jobs
 ENV METRICS_REPORTERS                          statsd
+ENV METRICS_SCOPE_JM                           flink.jobmanager
+ENV METRICS_SCOPE_JM_JOB                       flink.jobmanager.<job_name>
+ENV METRICS_SCOPE_TM                           flink.taskmanager
+ENV METRICS_SCOPE_TM_JOB                       flink.taskmanager.<job_name>
+ENV METRICS_SCOPE_TM_TASK                      flink.taskmanager.<job_name>.<subtask_index>
+ENV METRICS_SCOPE_TM_OPERATOR                  flink.taskmanager.<job_name>.<operator_name>.<subtask_index>
 ENV PARALLELISM_DEFAULT                        8
 ENV RECOVERY_ZOOKEEPER_STORAGEDIR              file://$FLINK_DATA/recovery
 ENV STATE_BACKEND                              filesystem
