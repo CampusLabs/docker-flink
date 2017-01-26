@@ -54,6 +54,7 @@ function write_config_file() {
   options[fs.hdfs.hdfssite]=$FS_HDFS_HDFSSITE
   options[fs.output.always-create-directory]=$FS_OUTPUT_ALWAYS_CREATE_DIRECTORY
   options[fs.overwrite-files]=$FS_OVERWRITE_FILES
+  options[high-availability.jobmanager.port]=$HIGH_AVAILABILITY_JOBMANAGER_PORT
   options[jobmanager.heap.mb]=$JOBMANAGER_HEAP_MB
   options[jobmanager.rpc.address]=$JOBMANAGER_RPC_ADDRESS
   options[jobmanager.rpc.port]=$JOBMANAGER_RPC_PORT
@@ -134,9 +135,6 @@ function write_config_file() {
     fi
   done
 
-  echo "metrics.reporter.statsd.class: org.apache.flink.metrics.statsd.StatsDReporter" >> $FLINK_CONFIG
-  echo "metrics.reporter.statsd.host: $STATSD_HOST" >> $FLINK_CONFIG
-  echo "metrics.reporter.statsd.port: $STATSD_PORT" >> $FLINK_CONFIG
   echo "$(cat $FLINK_CONFIG)"
 }
 
