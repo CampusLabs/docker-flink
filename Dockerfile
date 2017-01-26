@@ -39,6 +39,8 @@ COPY logback.xml $FLINK_HOME/conf/logback-yarn.xml
 ENV PATH $PATH:$FLINK_HOME/bin
 ENV FLINK_DATA /var/flink
 
+ENV BLOB_SERVER_PORT                           6124
+ENV BLOB_STORAGE_DIRECTORY                     $FLINK_DATA/blobs
 ENV FS_DEFAULT_SCHEME                          file:///
 ENV FS_OUTPUT_ALWAYS_CREATE_DIRECTORY          true
 ENV HIGH_AVAILABILITY_JOBMANAGER_PORT          6123
@@ -63,6 +65,9 @@ EXPOSE 6122
 
 # jobmanager rpc
 EXPOSE 6123
+
+# jobmanager blob server port
+EXPOSE 6124
 
 # jobmanager web ui
 EXPOSE 8081
