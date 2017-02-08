@@ -65,6 +65,12 @@ ENV METRICS_REPORTERS                          stsd
 ENV METRICS_REPORTER_STSD_CLASS                org.apache.flink.metrics.statsd.StatsDReporter
 ENV METRICS_REPORTER_STSD_HOST                 localhost
 ENV METRICS_REPORTER_STSD_PORT                 8125
+ENV METRICS_SCOPE_JM                           flink.jobmanager
+ENV METRICS_SCOPE_JM_JOB                       flink.jobmanager.<job_name>
+ENV METRICS_SCOPE_TM                           flink.taskmanager
+ENV METRICS_SCOPE_TM_JOB                       flink.taskmanager.<job_name>
+ENV METRICS_SCOPE_TM_TASK                      flink.taskmanager.<job_name>.<subtask_index>
+ENV METRICS_SCOPE_TM_OPERATOR                  flink.taskmanager.<job_name>.<operator_name>.<subtask_index>
 
 # taskmanager data
 EXPOSE 6121
