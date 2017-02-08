@@ -12,6 +12,10 @@ ENV CHECKSUM_URL $ARCHIVE_URL.sha
 ENV DEPENDENCIES bash
 ENV BUILD_PACKAGES curl
 
+ENV LOGBACK_CLASSIC_JAR http://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.1.10/logback-classic-1.1.10.jar
+ENV LOGBACK_CORE_JAR http://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.1.10/logback-core-1.1.10.jar
+ENV LOG4J_OVER_SLF4J_JAR http://repo1.maven.org/maven2/org/slf4j/log4j-over-slf4j/1.7.22/log4j-over-slf4j-1.7.22.jar
+
 WORKDIR /flink
 RUN apk --no-cache add $BUILD_PACKAGES $DEPENDENCIES \
   && curl $ARCHIVE_URL -o $ARCHIVE_NAME -s \
@@ -21,15 +25,16 @@ RUN apk --no-cache add $BUILD_PACKAGES $DEPENDENCIES \
   && mkdir -p $FLINK_HOME \
   && mv flink-$FLINK_VERSION/* $FLINK_HOME \
   && rm -Rf /flink \
+  && cd /opt/flink/lib/ \
+  && curl -O $LOGBACK_CLASSIC_JAR \
+  && curl -O $LOGBACK_CORE_JAR \
+  && curl -O $LOG4J_OVER_SLF4J_JAR \
+  && rm log4j-1.2.17.jar slf4j-log4j12-1.7.7.jar \
   && apk del --purge $BUILD_PACKAGES \
   && sed -i -e "s/> \"\$out\" 200<&- 2>&1 < \/dev\/null &//" $FLINK_HOME/bin/flink-daemon.sh
 
 WORKDIR /opt/flink
 COPY entrypoint.sh $FLINK_HOME/bin/
-
-COPY log4j.properties $FLINK_HOME/conf/
-COPY log4j.properties $FLINK_HOME/conf/log4j-cli.properties
-COPY log4j.properties $FLINK_HOME/conf/log4j-yarn-session.properties
 
 COPY logback.xml $FLINK_HOME/conf/
 COPY logback.xml $FLINK_HOME/conf/logback-yarn.xml
