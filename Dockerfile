@@ -30,6 +30,7 @@ RUN apk --no-cache add $BUILD_PACKAGES $DEPENDENCIES \
   && curl -O $LOGBACK_CORE_JAR \
   && curl -O $LOG4J_OVER_SLF4J_JAR \
   && rm log4j-1.2.17.jar slf4j-log4j12-1.7.7.jar \
+  && cp /opt/flink/opt/flink-metrics-statsd-1.2.0.jar /opt/flink/lib \
   && apk del --purge $BUILD_PACKAGES \
   && sed -i -e "s/> \"\$out\" 200<&- 2>&1 < \/dev\/null &//" $FLINK_HOME/bin/flink-daemon.sh
 
@@ -59,6 +60,11 @@ ENV TASKMANAGER_DATA_PORT                      6121
 ENV TASKMANAGER_RPC_PORT                       6122
 ENV TASKMANAGER_HEAP_MB                        2048
 ENV TASKMANAGER_NUMBEROFTASKSLOTS              8
+
+ENV METRICS_REPORTERS                          stsd
+ENV METRICS_REPORTER_STSD_CLASS                org.apache.flink.metrics.statsd.StatsDReporter
+ENV METRICS_REPORTER_STSD_HOST                 localhost
+ENV METRICS_REPORTER_STSD_PORT                 8125
 
 # taskmanager data
 EXPOSE 6121

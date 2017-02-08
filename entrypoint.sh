@@ -69,6 +69,9 @@ function write_config_file() {
   options[jobmanager.web.tmpdir]=$JOBMANAGER_WEB_TMPDIR
   options[jobmanager.web.upload.dir]=$JOBMANAGER_WEB_UPLOAD_DIR
   options[metrics.reporters]=$METRICS_REPORTERS
+  options[metrics.reporter.stsd.class]=$METRICS_REPORTER_STSD_CLASS
+  options[metrics.reporter.stsd.host]=$METRICS_REPORTER_STSD_HOST
+  options[metrics.reporter.stsd.port]=$METRICS_REPORTER_STSD_PORT
   options[metrics.scope.jm]=$METRICS_SCOPE_JM
   options[metrics.scope.jm.job]=$METRICS_SCOPE_JM_JOB
   options[metrics.scope.tm]=$METRICS_SCOPE_TM
