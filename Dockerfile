@@ -9,7 +9,7 @@ ENV FILE_NAME flink-${FLINK_VERSION}-bin-hadoop${HADOOP_VERSION}-scala_${SCALA_V
 ENV ARCHIVE_NAME ${FILE_NAME}.tgz
 ENV ARCHIVE_URL http://www-us.apache.org/dist/flink/flink-${FLINK_VERSION}/${ARCHIVE_NAME}
 ENV CHECKSUM_URL $ARCHIVE_URL.sha
-ENV DEPENDENCIES bash
+ENV DEPENDENCIES bash libstdc++ ncurses
 ENV BUILD_PACKAGES curl
 
 ENV LOGBACK_CLASSIC_JAR http://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.1.10/logback-classic-1.1.10.jar
