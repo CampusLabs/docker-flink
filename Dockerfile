@@ -1,4 +1,4 @@
-FROM openjdk:8-alpine
+FROM frolvlad/alpine-oraclejdk8
 
 ENV FLINK_VERSION 1.2.0
 ENV HADOOP_VERSION 27
