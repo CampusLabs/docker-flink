@@ -1,6 +1,7 @@
 FROM frolvlad/alpine-oraclejdk8
 
-ENV FLINK_VERSION 1.2.0
+ENV FLINK_MAJOR_VERSION 1.2
+ENV FLINK_VERSION ${FLINK_MAJOR_VERSION}.0
 ENV HADOOP_VERSION 27
 ENV SCALA_VERSION 2.11
 ENV FLINK_HOME /opt/flink
@@ -9,12 +10,15 @@ ENV FILE_NAME flink-${FLINK_VERSION}-bin-hadoop${HADOOP_VERSION}-scala_${SCALA_V
 ENV ARCHIVE_NAME ${FILE_NAME}.tgz
 ENV ARCHIVE_URL http://www-us.apache.org/dist/flink/flink-${FLINK_VERSION}/${ARCHIVE_NAME}
 ENV CHECKSUM_URL $ARCHIVE_URL.sha
+ENV CONFIG_URL https://raw.githubusercontent.com/apache/flink/release-${FLINK_MAJOR_VERSION}/docs/setup/config.md
 ENV DEPENDENCIES bash libstdc++ ncurses
 ENV BUILD_PACKAGES curl
 
 ENV LOGBACK_CLASSIC_JAR http://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.1.10/logback-classic-1.1.10.jar
 ENV LOGBACK_CORE_JAR http://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.1.10/logback-core-1.1.10.jar
 ENV LOG4J_OVER_SLF4J_JAR http://repo1.maven.org/maven2/org/slf4j/log4j-over-slf4j/1.7.22/log4j-over-slf4j-1.7.22.jar
+
+# curl $CONFIG_URL | sed -n 's/^- `\([a-z\.-]*\)`.*/\1/p' | sort | uniq | tr 'a-z' 'A-Z' | sed 's/[\.-]/_/g'
 
 WORKDIR /flink
 RUN apk --no-cache add $BUILD_PACKAGES $DEPENDENCIES \
@@ -30,7 +34,8 @@ RUN apk --no-cache add $BUILD_PACKAGES $DEPENDENCIES \
   && curl -O $LOGBACK_CORE_JAR \
   && curl -O $LOG4J_OVER_SLF4J_JAR \
   && rm log4j-1.2.17.jar slf4j-log4j12-1.7.7.jar \
-  && cp /opt/flink/opt/flink-metrics-statsd-1.2.0.jar /opt/flink/lib \
+  && cp /opt/flink/opt/flink-metrics-statsd-${FLINK_VERSION}.jar /opt/flink/lib \
+  && curl $CONFIG_URL | sed -n 's/^- `\([a-z\.-]*\)`.*/\1/p' | sort | uniq > $FLINK_HOME/options \
   && apk del --purge $BUILD_PACKAGES \
   && sed -i -e "s/> \"\$out\" 200<&- 2>&1 < \/dev\/null &//" $FLINK_HOME/bin/flink-daemon.sh
 
