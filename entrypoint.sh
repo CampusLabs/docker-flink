@@ -37,7 +37,7 @@ function write_config_file() {
     fi
   done
 
-  echo "$(cat $FLINK_CONFIG)"
+  echo "$(cat $FLINK_CONFIG | sort)"
 }
 
 write_config_file

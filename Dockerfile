@@ -11,7 +11,7 @@ ENV ARCHIVE_NAME ${FILE_NAME}.tgz
 ENV ARCHIVE_URL http://www-us.apache.org/dist/flink/flink-${FLINK_VERSION}/${ARCHIVE_NAME}
 ENV CHECKSUM_URL $ARCHIVE_URL.sha
 ENV CONFIG_URL https://raw.githubusercontent.com/apache/flink/release-${FLINK_MAJOR_VERSION}/docs/setup/config.md
-ENV DEPENDENCIES bash libstdc++ ncurses
+ENV DEPENDENCIES bash libstdc++ ncurses ca-certificates
 ENV BUILD_PACKAGES curl
 
 ENV LOGBACK_CLASSIC_JAR http://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.1.10/logback-classic-1.1.10.jar
@@ -30,12 +30,16 @@ RUN apk --no-cache add $BUILD_PACKAGES $DEPENDENCIES \
   && mv flink-$FLINK_VERSION/* $FLINK_HOME \
   && rm -Rf /flink \
   && cd /opt/flink/lib/ \
-  && curl -O $LOGBACK_CLASSIC_JAR \
-  && curl -O $LOGBACK_CORE_JAR \
-  && curl -O $LOG4J_OVER_SLF4J_JAR \
+  && curl -O $LOGBACK_CLASSIC_JAR -s \
+  && curl -O $LOGBACK_CORE_JAR -s \
+  && curl -O $LOG4J_OVER_SLF4J_JAR -s \
   && rm log4j-1.2.17.jar slf4j-log4j12-1.7.7.jar \
   && cp /opt/flink/opt/flink-metrics-statsd-${FLINK_VERSION}.jar /opt/flink/lib \
-  && curl $CONFIG_URL | sed -n 's/^- `\([a-z\.-]*\)`.*/\1/p' | sort | uniq > $FLINK_HOME/options \
+  && curl $CONFIG_URL -s | sed -n 's/^- `\([a-z\.-]*\)`.*/\1/p' | sort | uniq > $FLINK_HOME/options \
+  && echo "taskmanager.numberOfTaskSlots" >> $FLINK_HOME/options \
+  && echo "metrics.reporter.stsd.class" >> $FLINK_HOME/options \
+  && echo "metrics.reporter.stsd.host" >> $FLINK_HOME/options \
+  && echo "metrics.reporter.stsd.port" >> $FLINK_HOME/options \
   && apk del --purge $BUILD_PACKAGES \
   && sed -i -e "s/> \"\$out\" 200<&- 2>&1 < \/dev\/null &//" $FLINK_HOME/bin/flink-daemon.sh
 
@@ -52,14 +56,12 @@ ENV BLOB_SERVER_PORT                           6124
 ENV BLOB_STORAGE_DIRECTORY                     $FLINK_DATA/blobs
 ENV FS_DEFAULT_SCHEME                          file:///
 ENV FS_OUTPUT_ALWAYS_CREATE_DIRECTORY          true
-ENV HIGH_AVAILABILITY_JOBMANAGER_PORT          6123
 ENV JOBMANAGER_HEAP_MB                         1024
 ENV JOBMANAGER_RPC_ADDRESS                     jobmanager
 ENV JOBMANAGER_RPC_PORT                        6123
 ENV JOBMANAGER_WEB_PORT                        8081
 ENV JOBMANAGER_WEB_UPLOAD_DIR                  $FLINK_DATA/jobs
 ENV PARALLELISM_DEFAULT                        8
-ENV RECOVERY_ZOOKEEPER_STORAGEDIR              $FLINK_DATA/recovery
 ENV STATE_BACKEND_FS_CHECKPOINTDIR             $FLINK_DATA/checkpoints
 ENV TASKMANAGER_DATA_PORT                      6121
 ENV TASKMANAGER_RPC_PORT                       6122
@@ -71,11 +73,12 @@ ENV METRICS_REPORTER_STSD_CLASS                org.apache.flink.metrics.statsd.S
 ENV METRICS_REPORTER_STSD_HOST                 localhost
 ENV METRICS_REPORTER_STSD_PORT                 8125
 ENV METRICS_SCOPE_JM                           flink.jobmanager
-ENV METRICS_SCOPE_JM_JOB                       flink.jobmanager.<job_name>
-ENV METRICS_SCOPE_TM                           flink.taskmanager
-ENV METRICS_SCOPE_TM_JOB                       flink.taskmanager.<job_name>
-ENV METRICS_SCOPE_TM_TASK                      flink.taskmanager.<job_name>.<subtask_index>
-ENV METRICS_SCOPE_TM_OPERATOR                  flink.taskmanager.<job_name>.<operator_name>.<subtask_index>
+ENV METRICS_SCOPE_JM_JOB                       <job_name>.jobmanager
+ENV METRICS_SCOPE_TM                           flink.taskmanager.<tm_id>
+ENV METRICS_SCOPE_TM_JOB                       <job_name>.taskmanager.<tm_id>
+ENV METRICS_SCOPE_TM_TASK                      <job_name>.task.<subtask_index>.<task_name>
+ENV METRICS_SCOPE_TM_OPERATOR                  <job_name>.operator.<subtask_index>.<operator_name>
+ENV TASKMANAGER_MEMORY_PREALLOCATE             true
 
 # taskmanager data
 EXPOSE 6121
