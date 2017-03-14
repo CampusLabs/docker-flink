@@ -18,8 +18,6 @@ ENV LOGBACK_CLASSIC_JAR http://repo1.maven.org/maven2/ch/qos/logback/logback-cla
 ENV LOGBACK_CORE_JAR http://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.1.10/logback-core-1.1.10.jar
 ENV LOG4J_OVER_SLF4J_JAR http://repo1.maven.org/maven2/org/slf4j/log4j-over-slf4j/1.7.22/log4j-over-slf4j-1.7.22.jar
 
-# curl $CONFIG_URL | sed -n 's/^- `\([a-z\.-]*\)`.*/\1/p' | sort | uniq | tr 'a-z' 'A-Z' | sed 's/[\.-]/_/g'
-
 WORKDIR /flink
 RUN apk --no-cache add $BUILD_PACKAGES $DEPENDENCIES \
   && curl $ARCHIVE_URL -o $ARCHIVE_NAME -s \
@@ -40,6 +38,7 @@ RUN apk --no-cache add $BUILD_PACKAGES $DEPENDENCIES \
   && echo "metrics.reporter.stsd.class" >> $FLINK_HOME/options \
   && echo "metrics.reporter.stsd.host" >> $FLINK_HOME/options \
   && echo "metrics.reporter.stsd.port" >> $FLINK_HOME/options \
+  && echo "high-availability.jobmanager.port" >> $FLINK_HOME/options \
   && apk del --purge $BUILD_PACKAGES \
   && sed -i -e "s/> \"\$out\" 200<&- 2>&1 < \/dev\/null &//" $FLINK_HOME/bin/flink-daemon.sh
 
@@ -52,33 +51,33 @@ COPY logback.xml $FLINK_HOME/conf/logback-yarn.xml
 ENV PATH $PATH:$FLINK_HOME/bin
 ENV FLINK_DATA /var/flink
 
-ENV BLOB_SERVER_PORT                           6124
-ENV BLOB_STORAGE_DIRECTORY                     $FLINK_DATA/blobs
-ENV FS_DEFAULT_SCHEME                          file:///
-ENV FS_OUTPUT_ALWAYS_CREATE_DIRECTORY          true
-ENV JOBMANAGER_HEAP_MB                         1024
-ENV JOBMANAGER_RPC_ADDRESS                     jobmanager
-ENV JOBMANAGER_RPC_PORT                        6123
-ENV JOBMANAGER_WEB_PORT                        8081
-ENV JOBMANAGER_WEB_UPLOAD_DIR                  $FLINK_DATA/jobs
-ENV PARALLELISM_DEFAULT                        8
-ENV STATE_BACKEND_FS_CHECKPOINTDIR             $FLINK_DATA/checkpoints
-ENV TASKMANAGER_DATA_PORT                      6121
-ENV TASKMANAGER_RPC_PORT                       6122
-ENV TASKMANAGER_HEAP_MB                        2048
-ENV TASKMANAGER_NUMBEROFTASKSLOTS              8
+ENV BLOB_SERVER_PORT                  6124
+ENV BLOB_STORAGE_DIRECTORY            $FLINK_DATA/blobs
+ENV FS_DEFAULT_SCHEME                 file:///
+ENV FS_OUTPUT_ALWAYS_CREATE_DIRECTORY true
+ENV JOBMANAGER_HEAP_MB                1024
+ENV JOBMANAGER_RPC_ADDRESS            jobmanager
+ENV JOBMANAGER_RPC_PORT               6123
+ENV JOBMANAGER_WEB_PORT               8081
+ENV JOBMANAGER_WEB_UPLOAD_DIR         $FLINK_DATA/jobs
+ENV PARALLELISM_DEFAULT               1
+ENV STATE_BACKEND_FS_CHECKPOINTDIR    $FLINK_DATA/checkpoints
+ENV TASKMANAGER_DATA_PORT             6121
+ENV TASKMANAGER_RPC_PORT              6122
+ENV TASKMANAGER_HEAP_MB               2048
+ENV TASKMANAGER_NUMBEROFTASKSLOTS     1
 
-ENV METRICS_REPORTERS                          stsd
-ENV METRICS_REPORTER_STSD_CLASS                org.apache.flink.metrics.statsd.StatsDReporter
-ENV METRICS_REPORTER_STSD_HOST                 localhost
-ENV METRICS_REPORTER_STSD_PORT                 8125
-ENV METRICS_SCOPE_JM                           flink.jobmanager
-ENV METRICS_SCOPE_JM_JOB                       <job_name>.jobmanager
-ENV METRICS_SCOPE_TM                           flink.taskmanager.<tm_id>
-ENV METRICS_SCOPE_TM_JOB                       <job_name>.taskmanager.<tm_id>
-ENV METRICS_SCOPE_TM_TASK                      <job_name>.task.<subtask_index>.<task_name>
-ENV METRICS_SCOPE_TM_OPERATOR                  <job_name>.operator.<subtask_index>.<operator_name>
-ENV TASKMANAGER_MEMORY_PREALLOCATE             true
+ENV METRICS_REPORTERS                 stsd
+ENV METRICS_REPORTER_STSD_CLASS       org.apache.flink.metrics.statsd.StatsDReporter
+ENV METRICS_REPORTER_STSD_HOST        localhost
+ENV METRICS_REPORTER_STSD_PORT        8125
+ENV METRICS_SCOPE_JM                  flink.jobmanager
+ENV METRICS_SCOPE_JM_JOB              <job_name>.jobmanager
+ENV METRICS_SCOPE_TM                  flink.taskmanager.<tm_id>
+ENV METRICS_SCOPE_TM_JOB              <job_name>.taskmanager.<tm_id>
+ENV METRICS_SCOPE_TM_TASK             <job_name>.task.<subtask_index>.<task_name>
+ENV METRICS_SCOPE_TM_OPERATOR         <job_name>.operator.<subtask_index>.<operator_name>
+ENV TASKMANAGER_MEMORY_PREALLOCATE    true
 
 # taskmanager data
 EXPOSE 6121
