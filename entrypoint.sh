@@ -26,6 +26,9 @@ mkdir -p $STATE_BACKEND_ROCKSDB_CHECKPOINTDIR
 
 FLINK_CONFIG=$FLINK_HOME/conf/flink-conf.yaml
 
+METRICS_SCOPE_OPERATOR=$METRICS_SCOPE_TM_OPERATOR
+METRICS_SCOPE_TASK=$METRICS_SCOPE_TM_TASK
+
 function write_config_file() {
   declare -A options
   while read o; do

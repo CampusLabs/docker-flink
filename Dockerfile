@@ -38,6 +38,8 @@ RUN apk --no-cache add $BUILD_PACKAGES $DEPENDENCIES \
   && echo "metrics.reporter.stsd.class" >> $FLINK_HOME/options \
   && echo "metrics.reporter.stsd.host" >> $FLINK_HOME/options \
   && echo "metrics.reporter.stsd.port" >> $FLINK_HOME/options \
+  && echo "metrics.scope.operator" >> $FLINK_HOME/options \
+  && echo "metrics.scope.task" >> $FLINK_HOME/options \
   && echo "high-availability.jobmanager.port" >> $FLINK_HOME/options \
   && apk del --purge $BUILD_PACKAGES \
   && sed -i -e "s/> \"\$out\" 200<&- 2>&1 < \/dev\/null &//" $FLINK_HOME/bin/flink-daemon.sh
