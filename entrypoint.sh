@@ -18,6 +18,12 @@
 # limitations under the License.
 ################################################################################
 
+mkdir -p $BLOB_STORAGE_DIRECTORY
+mkdir -p $JOBMANAGER_WEB_TMPDIR
+mkdir -p $JOBMANAGER_WEB_UPLOAD_DIR
+mkdir -p $TASKMANAGER_TMP_DIRS
+mkdir -p $STATE_BACKEND_ROCKSDB_CHECKPOINTDIR
+
 FLINK_CONFIG=$FLINK_HOME/conf/flink-conf.yaml
 
 function write_config_file() {

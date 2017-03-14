@@ -86,6 +86,7 @@ ENV STATE_BACKEND_ROCKSDB_CHECKPOINTDIR $FLINK_TMP/rocksdb
 
 ENV STATE_BACKEND                          filesystem
 ENV ENV_JAVA_OPTS                          -XX:ErrorFile=$FLINK_DATA/crash
+ENV ENV_LOG_DIR                            $FLINK_DATA/log
 ENV HIGH_AVAILABILITY_ZOOKEEPER_STORAGEDIR $FLINK_DATA/recovery
 ENV STATE_CHECKPOINTS_DIR                  $FLINK_DATA/checkpoints/meta
 ENV STATE_BACKEND_FS_CHECKPOINTDIR         $FLINK_DATA/checkpoints/data
