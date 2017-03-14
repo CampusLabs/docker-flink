@@ -73,8 +73,8 @@ ENV METRICS_REPORTER_STSD_HOST        localhost
 ENV METRICS_REPORTER_STSD_PORT        8125
 ENV METRICS_SCOPE_JM                  flink.jobmanager
 ENV METRICS_SCOPE_JM_JOB              <job_name>.jobmanager
-ENV METRICS_SCOPE_TM                  flink.taskmanager.<tm_id>
-ENV METRICS_SCOPE_TM_JOB              <job_name>.taskmanager.<tm_id>
+ENV METRICS_SCOPE_TM                  flink.taskmanager.<host>
+ENV METRICS_SCOPE_TM_JOB              <job_name>.taskmanager.<host>
 ENV METRICS_SCOPE_TM_TASK             <job_name>.task.<subtask_index>.<task_name>
 ENV METRICS_SCOPE_TM_OPERATOR         <job_name>.operator.<subtask_index>.<operator_name>
 
