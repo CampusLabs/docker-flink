@@ -50,22 +50,22 @@ COPY logback.xml $FLINK_HOME/conf/logback-yarn.xml
 
 ENV PATH $PATH:$FLINK_HOME/bin
 ENV FLINK_DATA /var/flink
+ENV FLINK_TMP /tmp/flink
 
 ENV BLOB_SERVER_PORT                  6124
-ENV BLOB_STORAGE_DIRECTORY            $FLINK_DATA/blobs
 ENV FS_DEFAULT_SCHEME                 file:///
 ENV FS_OUTPUT_ALWAYS_CREATE_DIRECTORY true
 ENV JOBMANAGER_HEAP_MB                1024
 ENV JOBMANAGER_RPC_ADDRESS            jobmanager
 ENV JOBMANAGER_RPC_PORT               6123
+ENV HIGH_AVAILABILITY_JOBMANAGER_PORT 6123
 ENV JOBMANAGER_WEB_PORT               8081
-ENV JOBMANAGER_WEB_UPLOAD_DIR         $FLINK_DATA/jobs
 ENV PARALLELISM_DEFAULT               1
-ENV STATE_BACKEND_FS_CHECKPOINTDIR    $FLINK_DATA/checkpoints
 ENV TASKMANAGER_DATA_PORT             6121
 ENV TASKMANAGER_RPC_PORT              6122
 ENV TASKMANAGER_HEAP_MB               2048
 ENV TASKMANAGER_NUMBEROFTASKSLOTS     1
+ENV TASKMANAGER_MEMORY_PREALLOCATE    true
 
 ENV METRICS_REPORTERS                 stsd
 ENV METRICS_REPORTER_STSD_CLASS       org.apache.flink.metrics.statsd.StatsDReporter
@@ -77,7 +77,20 @@ ENV METRICS_SCOPE_TM                  flink.taskmanager.<tm_id>
 ENV METRICS_SCOPE_TM_JOB              <job_name>.taskmanager.<tm_id>
 ENV METRICS_SCOPE_TM_TASK             <job_name>.task.<subtask_index>.<task_name>
 ENV METRICS_SCOPE_TM_OPERATOR         <job_name>.operator.<subtask_index>.<operator_name>
-ENV TASKMANAGER_MEMORY_PREALLOCATE    true
+
+ENV BLOB_STORAGE_DIRECTORY              $FLINK_TMP/blobs
+ENV JOBMANAGER_WEB_TMPDIR               $FLINK_TMP/web
+ENV JOBMANAGER_WEB_UPLOAD_DIR           $FLINK_TMP/web/upload
+ENV TASKMANAGER_TMP_DIRS                $FLINK_TMP/taskmanager
+ENV STATE_BACKEND_ROCKSDB_CHECKPOINTDIR $FLINK_TMP/rocksdb
+
+ENV STATE_BACKEND                          filesystem
+ENV ENV_JAVA_OPTS                          $FLINK_DATA/crash
+ENV HIGH_AVAILABILITY_ZOOKEEPER_STORAGEDIR $FLINK_DATA/recovery
+ENV STATE_CHECKPOINTS_DIR                  $FLINK_DATA/checkpoints/meta
+ENV STATE_BACKEND_FS_CHECKPOINTDIR         $FLINK_DATA/checkpoints/data
+
+ENV TASKMANAGER_RUNTIME_HASHJOIN_BLOOM_FILTERS true
 
 # taskmanager data
 EXPOSE 6121
@@ -94,7 +107,10 @@ EXPOSE 6124
 # jobmanager web ui
 EXPOSE 8081
 
-# job, recovery, and checkpoint storage
+# temp storage
+VOLUME $FLINK_TMP
+
+# recovery and checkpoint storage; must be shared across nodes for HA operation
 VOLUME $FLINK_DATA
 
 ENTRYPOINT ["entrypoint.sh"]
