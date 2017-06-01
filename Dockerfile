@@ -1,7 +1,7 @@
 FROM openjdk:8
 
-ENV FLINK_MAJOR_VERSION 1.2
-ENV FLINK_VERSION ${FLINK_MAJOR_VERSION}.1
+ENV FLINK_MAJOR_VERSION 1.3
+ENV FLINK_VERSION ${FLINK_MAJOR_VERSION}.0
 ENV HADOOP_VERSION 27
 ENV SCALA_VERSION 2.11
 ENV FLINK_HOME /opt/flink
@@ -37,8 +37,7 @@ RUN curl $ARCHIVE_URL -o $ARCHIVE_NAME -s \
   && echo "metrics.reporter.stsd.port" >> $FLINK_HOME/options \
   && echo "metrics.scope.operator" >> $FLINK_HOME/options \
   && echo "metrics.scope.task" >> $FLINK_HOME/options \
-  && echo "high-availability.jobmanager.port" >> $FLINK_HOME/options \
-  && sed -i -e "s/> \"\$out\" 200<&- 2>&1 < \/dev\/null &//" $FLINK_HOME/bin/flink-daemon.sh
+  && echo "high-availability.jobmanager.port" >> $FLINK_HOME/options
 
 WORKDIR /opt/flink
 COPY entrypoint.sh $FLINK_HOME/bin/
@@ -83,7 +82,7 @@ ENV TASKMANAGER_TMP_DIRS                $FLINK_TMP/taskmanager
 ENV STATE_BACKEND_ROCKSDB_CHECKPOINTDIR $FLINK_TMP/rocksdb
 
 ENV STATE_BACKEND                          filesystem
-ENV ENV_JAVA_OPTS                          -XX:ErrorFile=$FLINK_DATA/taskmanager_crash_%p.log
+ENV ENV_JAVA_OPTS                          -XX:ErrorFile=$FLINK_DATA/crash_%p.log
 ENV ENV_LOG_DIR                            $FLINK_DATA/log
 ENV HIGH_AVAILABILITY_ZOOKEEPER_STORAGEDIR $FLINK_DATA/recovery
 ENV STATE_CHECKPOINTS_DIR                  $FLINK_DATA/checkpoints/meta
