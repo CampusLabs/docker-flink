@@ -1,4 +1,4 @@
-FROM openjdk:8
+FROM openjdk:8u151
 
 ENV FLINK_MAJOR_VERSION=1.3 \
     HADOOP_VERSION=27 \
