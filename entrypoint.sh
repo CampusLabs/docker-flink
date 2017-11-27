@@ -51,10 +51,15 @@ function write_config_file() {
 
 write_config_file
 
-if [ "$1" = "jobmanager" ]; then
-  exec $FLINK_HOME/bin/jobmanager.sh start-foreground cluster
-elif [ "$1" = "taskmanager" ]; then
-  exec $FLINK_HOME/bin/taskmanager.sh start-foreground
-else
-  $@
-fi
+case $1 in
+  (jobmanager)
+    exec $FLINK_HOME/bin/jobmanager.sh start-foreground cluster
+  ;;
+  (taskmanager)
+    exec $FLINK_HOME/bin/taskmanager.sh start-foreground
+  ;;
+  (*)
+    $@
+  ;;
+esac
+
