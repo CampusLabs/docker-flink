@@ -1,4 +1,4 @@
-FROM openjdk:8u151
+FROM azul/zulu-openjdk-debian:8u152
 
 ENV FLINK_MAJOR_VERSION=1.3 \
     HADOOP_VERSION=27 \
@@ -12,7 +12,9 @@ ENV CHECKSUM_URL=$ARCHIVE_URL.sha \
     CONFIG_URL=https://raw.githubusercontent.com/apache/flink/release-${FLINK_MAJOR_VERSION}/docs/setup/config.md
 
 WORKDIR /flink
-RUN curl $ARCHIVE_URL -o $ARCHIVE_NAME -s \
+RUN apt-get update \
+  && apt-get install -yq gettext curl \
+  && curl $ARCHIVE_URL -o $ARCHIVE_NAME -s \
   && curl $CHECKSUM_URL -o $ARCHIVE_NAME.sha -s \
   && cat $ARCHIVE_NAME.sha | sha512sum -c \
   && tar -xzf $ARCHIVE_NAME \
@@ -28,8 +30,6 @@ RUN curl $ARCHIVE_URL -o $ARCHIVE_NAME -s \
   && echo "metrics.scope.operator" >> $FLINK_HOME/options \
   && echo "metrics.scope.task" >> $FLINK_HOME/options \
   && echo "high-availability.jobmanager.port" >> $FLINK_HOME/options \
-  && apt-get update \
-  && apt-get install -yq gettext \
   && rm -rf /var/lib/apt/lists/*
 
 RUN cd /opt/flink/lib/ \
