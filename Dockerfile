@@ -1,4 +1,4 @@
-FROM azul/zulu-openjdk-debian:8u152
+FROM azul/zulu-openjdk-debian:9
 
 ENV FLINK_MAJOR_VERSION=1.3 \
     HADOOP_VERSION=27 \
