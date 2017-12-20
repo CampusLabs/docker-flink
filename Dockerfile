@@ -9,7 +9,7 @@ ENV FLINK_HOME=/opt/flink \
     ARCHIVE_NAME=${FILE_NAME}.tgz
 ENV ARCHIVE_URL=http://www-us.apache.org/dist/flink/flink-${FLINK_VERSION}/${ARCHIVE_NAME}
 ENV CHECKSUM_URL=$ARCHIVE_URL.sha \
-    CONFIG_URL=https://raw.githubusercontent.com/apache/flink/release-${FLINK_MAJOR_VERSION}/docs/setup/config.md
+    CONFIG_URL=https://raw.githubusercontent.com/apache/flink/release-${FLINK_MAJOR_VERSION}/docs/ops/config.md
 
 WORKDIR /flink
 RUN apt-get update \
