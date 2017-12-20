@@ -53,7 +53,7 @@ write_config_file
 
 case $1 in
   (jobmanager)
-    exec $FLINK_HOME/bin/jobmanager.sh start-foreground cluster
+    exec $FLINK_HOME/bin/jobmanager.sh start-foreground cluster 0.0.0.0
   ;;
   (taskmanager)
     exec $FLINK_HOME/bin/taskmanager.sh start-foreground
